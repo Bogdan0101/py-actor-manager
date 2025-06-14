@@ -5,18 +5,19 @@ from app.models import Actor
 
 class ActorManager:
 
-    def __init__(self, db_name: str, table_name: str):
+    def __init__(self, db_name: str, table_name: str) -> None:
         self._connection = sqlite3.connect(db_name)
         self.table_name = table_name
 
-    def create(self, first_name: str, last_name: str):
+    def create(self, first_name: str, last_name: str) -> None:
         self._connection.execute(
-            f"INSERT INTO {self.table_name} (first_name, last_name) VALUES (?, ?)",
+            f"INSERT INTO {self.table_name} (first_name, last_name) "
+            f"VALUES (?, ?)",
             (first_name, last_name)
         )
         self._connection.commit()
 
-    def all(self):
+    def all(self) -> list:
         date_actors = self._connection.execute(
             f"SELECT * FROM {self.table_name}"
         )
@@ -24,14 +25,15 @@ class ActorManager:
             Actor(*row) for row in date_actors
         ]
 
-    def update(self, pk: int, new_first_name: str, new_last_name: str):
+    def update(self, pk: int, new_first_name: str, new_last_name: str) -> None:
         self._connection.execute(
-            f"UPDATE {self.table_name} SET first_name = ?, last_name = ? WHERE id = ?",
+            f"UPDATE {self.table_name} SET first_name = ?, last_name = ? "
+            f"WHERE id = ?",
             (new_first_name, new_last_name, pk)
         )
         self._connection.commit()
 
-    def delete(self, pk: int):
+    def delete(self, pk: int) -> None:
         self._connection.execute(
             f"DELETE FROM {self.table_name} WHERE id = ?",
             (pk,)
